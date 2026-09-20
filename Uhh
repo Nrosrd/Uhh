@@ -116,7 +116,7 @@ function Library:CreateWindow(titleText)
 	listLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	listLayout.Parent = container
 
-	-- FIX: Explicitly expand CanvasSize whenever children are added
+	-- Auto-expand CanvasSize when items are added
 	listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 		container.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + 12)
 	end)
@@ -131,7 +131,7 @@ function Library:CreateWindow(titleText)
 		button.Text = text or "Button"
 		button.TextColor3 = Color3.fromRGB(240, 240, 240)
 		button.TextSize = 14
-		button.Font = Enum.Font.SourceSansMedium
+		button.Font = Enum.Font.SourceSans -- FIXED: Valid Roblox Font
 		button.AutoButtonColor = false
 		button.Parent = container
 
@@ -173,7 +173,7 @@ function Library:CreateWindow(titleText)
 		label.Text = text or "Toggle"
 		label.TextColor3 = Color3.fromRGB(240, 240, 240)
 		label.TextSize = 14
-		label.Font = Enum.Font.SourceSansMedium
+		label.Font = Enum.Font.SourceSans -- FIXED: Valid Roblox Font
 		label.TextXAlignment = Enum.TextXAlignment.Left
 		label.Parent = frame
 
