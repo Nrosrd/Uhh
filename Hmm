@@ -17,14 +17,14 @@ function Library:CreateWindow(titleText)
 	screenGui.Name = "TabbedLibraryGUI"
 	screenGui.ResetOnSpawn = false
 	screenGui.DisplayOrder = 999
-	screenGui.IgnoreGuiInset = false -- Leaves Roblox's top menu bar fully visible & clear
+	screenGui.IgnoreGuiInset = true -- Stretches fully across left/right screen edges
 	screenGui.Parent = playerGui
 
-	-- Toggle Icon (Positioned cleanly below Roblox top bar)
+	-- Toggle Icon (Placed in top bar area)
 	local toggleBtn = Instance.new("TextButton")
 	toggleBtn.Name = "ToggleIcon"
 	toggleBtn.Size = UDim2.new(0, 36, 0, 36)
-	toggleBtn.Position = UDim2.new(0.5, -18, 0, 4)
+	toggleBtn.Position = UDim2.new(0.5, -18, 0, 0)
 	toggleBtn.BackgroundColor3 = Color3.fromRGB(28, 28, 34)
 	toggleBtn.Text = "⚙️"
 	toggleBtn.TextSize = 16
@@ -41,11 +41,11 @@ function Library:CreateWindow(titleText)
 	toggleStroke.Thickness = 1
 	toggleStroke.Parent = toggleBtn
 
-	-- 0.5 Black Overlay covering left, right, middle, and bottom screen
+	-- 0.5 Black Overlay: Full left/right width, starting below top Roblox bar (Y = 36)
 	local overlay = Instance.new("Frame")
 	overlay.Name = "ScreenOverlay"
-	overlay.Size = UDim2.new(1, 0, 1, 0)
-	overlay.Position = UDim2.new(0, 0, 0, 0)
+	overlay.Size = UDim2.new(1, 0, 1, -36)
+	overlay.Position = UDim2.new(0, 0, 0, 36)
 	overlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 	overlay.BackgroundTransparency = 0.5
 	overlay.Visible = true
