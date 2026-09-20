@@ -17,14 +17,20 @@ function Library:CreateWindow(titleText)
 	screenGui.Name = "TabbedLibraryGUI"
 	screenGui.ResetOnSpawn = false
 	screenGui.DisplayOrder = 999
-	screenGui.IgnoreGuiInset = true -- Stretches fully across left/right screen edges
+	screenGui.IgnoreGuiInset = true
+	
+	-- Disable mobile safe area padding so black overlay extends 100% to left and right edges
+	pcall(function()
+		screenGui.ScreenInsets = Enum.ScreenInsets.None
+	end)
+	
 	screenGui.Parent = playerGui
 
-	-- Toggle Icon (Placed in top bar area)
+	-- Original Toggle Icon Position
 	local toggleBtn = Instance.new("TextButton")
 	toggleBtn.Name = "ToggleIcon"
 	toggleBtn.Size = UDim2.new(0, 36, 0, 36)
-	toggleBtn.Position = UDim2.new(0.5, -18, 0, 0)
+	toggleBtn.Position = UDim2.new(0.5, -18, 0, 8)
 	toggleBtn.BackgroundColor3 = Color3.fromRGB(28, 28, 34)
 	toggleBtn.Text = "⚙️"
 	toggleBtn.TextSize = 16
@@ -41,22 +47,22 @@ function Library:CreateWindow(titleText)
 	toggleStroke.Thickness = 1
 	toggleStroke.Parent = toggleBtn
 
-	-- 0.5 Black Overlay: Full left/right width, starting below top Roblox bar (Y = 36)
+	-- 0.5 Black Overlay (Edge-to-Edge on PC and Mobile Landscape)
 	local overlay = Instance.new("Frame")
 	overlay.Name = "ScreenOverlay"
-	overlay.Size = UDim2.new(1, 0, 1, -36)
-	overlay.Position = UDim2.new(0, 0, 0, 36)
+	overlay.Size = UDim2.new(1, 0, 1, 0)
+	overlay.Position = UDim2.new(0, 0, 0, 0)
 	overlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 	overlay.BackgroundTransparency = 0.5
 	overlay.Visible = true
 	overlay.ZIndex = 1
 	overlay.Parent = screenGui
 
-	-- Main Menu Frame
+	-- Original Main Menu Frame Position
 	local mainFrame = Instance.new("Frame")
 	mainFrame.Name = "MainFrame"
-	mainFrame.Size = UDim2.new(0.85, 0, 0.88, 0)
-	mainFrame.Position = UDim2.new(0.075, 0, 0.06, 0)
+	mainFrame.Size = UDim2.new(0.85, 0, 0.82, 0)
+	mainFrame.Position = UDim2.new(0.075, 0, 0.09, 0)
 	mainFrame.BackgroundColor3 = Color3.fromRGB(16, 16, 20)
 	mainFrame.BackgroundTransparency = 0.15
 	mainFrame.BorderSizePixel = 0
@@ -102,7 +108,7 @@ function Library:CreateWindow(titleText)
 	closeCorner.CornerRadius = UDim.new(0, 4)
 	closeCorner.Parent = closeBtn
 
-	-- Open/Close Actions
+	-- Menu Toggle Actions
 	local function setMenuVisible(visible)
 		overlay.Visible = visible
 	end
@@ -115,7 +121,7 @@ function Library:CreateWindow(titleText)
 		setMenuVisible(not overlay.Visible)
 	end)
 
-	-- Left Sidebar (Tabs)
+	-- Left Sidebar (Tabs Container)
 	local sidebar = Instance.new("ScrollingFrame")
 	sidebar.Name = "Sidebar"
 	sidebar.Size = UDim2.new(0, 130, 1, -40)
