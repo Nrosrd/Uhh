@@ -17,13 +17,14 @@ function Library:CreateWindow(titleText)
 	screenGui.Name = "TabbedLibraryGUI"
 	screenGui.ResetOnSpawn = false
 	screenGui.DisplayOrder = 999
+	screenGui.IgnoreGuiInset = false -- Leaves Roblox's top menu bar fully visible & clear
 	screenGui.Parent = playerGui
 
-	-- Smaller Top-Middle Toggle Icon (36x36)
+	-- Toggle Icon (Positioned cleanly below Roblox top bar)
 	local toggleBtn = Instance.new("TextButton")
 	toggleBtn.Name = "ToggleIcon"
 	toggleBtn.Size = UDim2.new(0, 36, 0, 36)
-	toggleBtn.Position = UDim2.new(0.5, -18, 0, 8)
+	toggleBtn.Position = UDim2.new(0.5, -18, 0, 4)
 	toggleBtn.BackgroundColor3 = Color3.fromRGB(28, 28, 34)
 	toggleBtn.Text = "⚙️"
 	toggleBtn.TextSize = 16
@@ -40,7 +41,7 @@ function Library:CreateWindow(titleText)
 	toggleStroke.Thickness = 1
 	toggleStroke.Parent = toggleBtn
 
-	-- Full-Screen 0.5 Black Transparent Overlay
+	-- 0.5 Black Overlay covering left, right, middle, and bottom screen
 	local overlay = Instance.new("Frame")
 	overlay.Name = "ScreenOverlay"
 	overlay.Size = UDim2.new(1, 0, 1, 0)
@@ -51,11 +52,11 @@ function Library:CreateWindow(titleText)
 	overlay.ZIndex = 1
 	overlay.Parent = screenGui
 
-	-- Main Menu Frame (Fixed Position, No Dragging)
+	-- Main Menu Frame
 	local mainFrame = Instance.new("Frame")
 	mainFrame.Name = "MainFrame"
-	mainFrame.Size = UDim2.new(0.85, 0, 0.82, 0)
-	mainFrame.Position = UDim2.new(0.075, 0, 0.09, 0)
+	mainFrame.Size = UDim2.new(0.85, 0, 0.88, 0)
+	mainFrame.Position = UDim2.new(0.075, 0, 0.06, 0)
 	mainFrame.BackgroundColor3 = Color3.fromRGB(16, 16, 20)
 	mainFrame.BackgroundTransparency = 0.15
 	mainFrame.BorderSizePixel = 0
@@ -101,7 +102,7 @@ function Library:CreateWindow(titleText)
 	closeCorner.CornerRadius = UDim.new(0, 4)
 	closeCorner.Parent = closeBtn
 
-	-- Menu Toggle Actions
+	-- Open/Close Actions
 	local function setMenuVisible(visible)
 		overlay.Visible = visible
 	end
@@ -114,7 +115,7 @@ function Library:CreateWindow(titleText)
 		setMenuVisible(not overlay.Visible)
 	end)
 
-	-- Left Sidebar (Tabs Container)
+	-- Left Sidebar (Tabs)
 	local sidebar = Instance.new("ScrollingFrame")
 	sidebar.Name = "Sidebar"
 	sidebar.Size = UDim2.new(0, 130, 1, -40)
@@ -151,10 +152,8 @@ function Library:CreateWindow(titleText)
 
 	local Window = {}
 	local tabs = {}
-	local activeTabButton = nil
 
 	function Window:CreateTab(tabName)
-		-- Tab Sidebar Button
 		local tabBtn = Instance.new("TextButton")
 		tabBtn.Name = "Tab_" .. tabName
 		tabBtn.Size = UDim2.new(1, 0, 0, 30)
@@ -171,7 +170,6 @@ function Library:CreateWindow(titleText)
 		tabBtnCorner.CornerRadius = UDim.new(0, 4)
 		tabBtnCorner.Parent = tabBtn
 
-		-- Tab Content Grid Container
 		local tabContent = Instance.new("ScrollingFrame")
 		tabContent.Name = "Content_" .. tabName
 		tabContent.Size = UDim2.new(1, 0, 1, 0)
@@ -192,7 +190,6 @@ function Library:CreateWindow(titleText)
 			tabContent.CanvasSize = UDim2.new(0, 0, 0, gridLayout.AbsoluteContentSize.Y + 12)
 		end)
 
-		-- Switch Tab Function
 		local function selectTab()
 			for _, data in pairs(tabs) do
 				data.Content.Visible = false
@@ -208,7 +205,6 @@ function Library:CreateWindow(titleText)
 
 		table.insert(tabs, {Button = tabBtn, Content = tabContent})
 
-		-- Select first tab by default
 		if #tabs == 1 then
 			selectTab()
 		end
