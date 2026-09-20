@@ -6,38 +6,44 @@ local Library = {}
 Library.__index = Library
 
 function Library:CreateWindow(titleText: string)
-	local window = {}
-	setmetatable(window, Library)
+	local window = setmetatable({}, Library)
 
 	local localPlayer = Players.LocalPlayer
 	local playerGui = localPlayer:WaitForChild("PlayerGui")
 
-	if playerGui:FindFirstChild("LoadstringGUI") then
-		playerGui.LoadstringGUI:Destroy()
+	-- Destroy old instances
+	if playerGui:FindFirstChild("CustomLibraryGUI") then
+		playerGui.CustomLibraryGUI:Destroy()
 	end
 
+	-- ScreenGui
 	local screenGui = Instance.new("ScreenGui")
-	screenGui.Name = "LoadstringGUI"
+	screenGui.Name = "CustomLibraryGUI"
 	screenGui.ResetOnSpawn = false
+	screenGui.DisplayOrder = 100
 	screenGui.Parent = playerGui
 
+	-- Main Window Frame
 	local mainFrame = Instance.new("Frame")
 	mainFrame.Name = "MainFrame"
 	mainFrame.Size = UDim2.new(0, 420, 0, 300)
 	mainFrame.Position = UDim2.new(0.5, -210, 0.5, -150)
 	mainFrame.BackgroundColor3 = Color3.fromRGB(24, 24, 28)
 	mainFrame.BorderSizePixel = 0
+	mainFrame.ZIndex = 1
 	mainFrame.Parent = screenGui
 
 	local frameCorner = Instance.new("UICorner")
 	frameCorner.CornerRadius = UDim.new(0, 8)
 	frameCorner.Parent = mainFrame
 
+	-- Title Bar
 	local titleBar = Instance.new("Frame")
 	titleBar.Name = "TitleBar"
 	titleBar.Size = UDim2.new(1, 0, 0, 38)
 	titleBar.BackgroundColor3 = Color3.fromRGB(32, 32, 38)
 	titleBar.BorderSizePixel = 0
+	titleBar.ZIndex = 2
 	titleBar.Parent = mainFrame
 
 	local titleCorner = Instance.new("UICorner")
@@ -48,11 +54,12 @@ function Library:CreateWindow(titleText: string)
 	titleLabel.Size = UDim2.new(1, -40, 1, 0)
 	titleLabel.Position = UDim2.new(0, 12, 0, 0)
 	titleLabel.BackgroundTransparency = 1
-	titleLabel.Text = titleText or "Menu"
+	titleLabel.Text = titleText or "Control Panel"
 	titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 	titleLabel.TextSize = 15
 	titleLabel.Font = Enum.Font.SourceSansBold
 	titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+	titleLabel.ZIndex = 3
 	titleLabel.Parent = titleBar
 
 	local closeBtn = Instance.new("TextButton")
@@ -63,6 +70,7 @@ function Library:CreateWindow(titleText: string)
 	closeBtn.TextColor3 = Color3.fromRGB(220, 220, 220)
 	closeBtn.TextSize = 13
 	closeBtn.Font = Enum.Font.SourceSansBold
+	closeBtn.ZIndex = 3
 	closeBtn.Parent = titleBar
 
 	local closeCorner = Instance.new("UICorner")
@@ -73,6 +81,7 @@ function Library:CreateWindow(titleText: string)
 		screenGui:Destroy()
 	end)
 
+	-- Dragging Logic
 	local dragging, dragStart, startPos
 	titleBar.InputBegan:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -100,6 +109,7 @@ function Library:CreateWindow(titleText: string)
 		end
 	end)
 
+	-- Scrollable Component Container
 	local container = Instance.new("ScrollingFrame")
 	container.Name = "Container"
 	container.Size = UDim2.new(1, -24, 1, -50)
@@ -107,13 +117,20 @@ function Library:CreateWindow(titleText: string)
 	container.BackgroundTransparency = 1
 	container.BorderSizePixel = 0
 	container.ScrollBarThickness = 4
+	container.CanvasSize = UDim2.new(0, 0, 0, 0)
 	container.AutomaticCanvasSize = Enum.AutomaticSize.Y
+	container.ZIndex = 2
 	container.Parent = mainFrame
 
 	local listLayout = Instance.new("UIListLayout")
 	listLayout.Padding = UDim.new(0, 8)
 	listLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	listLayout.Parent = container
+
+	local padding = Instance.new("UIPadding")
+	padding.PaddingTop = UDim.new(0, 4)
+	padding.PaddingBottom = UDim.new(0, 4)
+	padding.Parent = container
 
 	window.ScreenGui = screenGui
 	window.Container = container
@@ -122,7 +139,10 @@ function Library:CreateWindow(titleText: string)
 end
 
 function Library:AddButton(text: string, callback: () -> ())
+	assert(self.Container, "AddButton must be called on a Window instance!")
+
 	local button = Instance.new("TextButton")
+	button.Name = "Button_" .. text
 	button.Size = UDim2.new(1, 0, 0, 36)
 	button.BackgroundColor3 = Color3.fromRGB(36, 36, 44)
 	button.Text = text
@@ -130,6 +150,7 @@ function Library:AddButton(text: string, callback: () -> ())
 	button.TextSize = 14
 	button.Font = Enum.Font.SourceSansMedium
 	button.AutoButtonColor = false
+	button.ZIndex = 3
 	button.Parent = self.Container
 
 	local corner = Instance.new("UICorner")
@@ -146,14 +167,20 @@ function Library:AddButton(text: string, callback: () -> ())
 	button.MouseButton1Click:Connect(function()
 		if callback then task.spawn(callback) end
 	end)
+
+	return button
 end
 
 function Library:AddToggle(text: string, defaultState: boolean, callback: (boolean) -> ())
+	assert(self.Container, "AddToggle must be called on a Window instance!")
+
 	local state = defaultState or false
 
 	local frame = Instance.new("Frame")
+	frame.Name = "Toggle_" .. text
 	frame.Size = UDim2.new(1, 0, 0, 36)
 	frame.BackgroundColor3 = Color3.fromRGB(36, 36, 44)
+	frame.ZIndex = 3
 	frame.Parent = self.Container
 
 	local corner = Instance.new("UICorner")
@@ -169,6 +196,7 @@ function Library:AddToggle(text: string, defaultState: boolean, callback: (boole
 	label.TextSize = 14
 	label.Font = Enum.Font.SourceSansMedium
 	label.TextXAlignment = Enum.TextXAlignment.Left
+	label.ZIndex = 4
 	label.Parent = frame
 
 	local togglePill = Instance.new("TextButton")
@@ -176,6 +204,7 @@ function Library:AddToggle(text: string, defaultState: boolean, callback: (boole
 	togglePill.Position = UDim2.new(1, -50, 0.5, -11)
 	togglePill.BackgroundColor3 = state and Color3.fromRGB(0, 160, 255) or Color3.fromRGB(60, 60, 72)
 	togglePill.Text = ""
+	togglePill.ZIndex = 4
 	togglePill.Parent = frame
 
 	local pillCorner = Instance.new("UICorner")
@@ -186,6 +215,7 @@ function Library:AddToggle(text: string, defaultState: boolean, callback: (boole
 	dot.Size = UDim2.new(0, 16, 0, 16)
 	dot.Position = state and UDim2.new(1, -19, 0.5, -8) or UDim2.new(0, 3, 0.5, -8)
 	dot.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	dot.ZIndex = 5
 	dot.Parent = togglePill
 
 	local dotCorner = Instance.new("UICorner")
@@ -202,6 +232,8 @@ function Library:AddToggle(text: string, defaultState: boolean, callback: (boole
 
 		if callback then task.spawn(callback, state) end
 	end)
+
+	return frame
 end
 
 return Library
