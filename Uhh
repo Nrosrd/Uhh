@@ -3,15 +3,14 @@ local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
 local Library = {}
-Library.__index = Library
 
-function Library:CreateWindow(titleText: string)
-	local window = setmetatable({}, Library)
+function Library:CreateWindow(titleText)
+	titleText = titleText or "Control Panel"
 
 	local localPlayer = Players.LocalPlayer
 	local playerGui = localPlayer:WaitForChild("PlayerGui")
 
-	-- Destroy old instances
+	-- Remove old instance if present
 	if playerGui:FindFirstChild("CustomLibraryGUI") then
 		playerGui.CustomLibraryGUI:Destroy()
 	end
@@ -20,10 +19,10 @@ function Library:CreateWindow(titleText: string)
 	local screenGui = Instance.new("ScreenGui")
 	screenGui.Name = "CustomLibraryGUI"
 	screenGui.ResetOnSpawn = false
-	screenGui.DisplayOrder = 100
+	screenGui.DisplayOrder = 999
 	screenGui.Parent = playerGui
 
-	-- Main Window Frame
+	-- Main Frame
 	local mainFrame = Instance.new("Frame")
 	mainFrame.Name = "MainFrame"
 	mainFrame.Size = UDim2.new(0, 420, 0, 300)
@@ -54,7 +53,7 @@ function Library:CreateWindow(titleText: string)
 	titleLabel.Size = UDim2.new(1, -40, 1, 0)
 	titleLabel.Position = UDim2.new(0, 12, 0, 0)
 	titleLabel.BackgroundTransparency = 1
-	titleLabel.Text = titleText or "Control Panel"
+	titleLabel.Text = titleText
 	titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 	titleLabel.TextSize = 15
 	titleLabel.Font = Enum.Font.SourceSansBold
@@ -81,7 +80,7 @@ function Library:CreateWindow(titleText: string)
 		screenGui:Destroy()
 	end)
 
-	-- Dragging Logic
+	-- Window Dragging Logic
 	local dragging, dragStart, startPos
 	titleBar.InputBegan:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -109,7 +108,7 @@ function Library:CreateWindow(titleText: string)
 		end
 	end)
 
-	-- Scrollable Component Container
+	-- Scrollable Container
 	local container = Instance.new("ScrollingFrame")
 	container.Name = "Container"
 	container.Size = UDim2.new(1, -24, 1, -50)
@@ -132,108 +131,104 @@ function Library:CreateWindow(titleText: string)
 	padding.PaddingBottom = UDim.new(0, 4)
 	padding.Parent = container
 
-	window.ScreenGui = screenGui
-	window.Container = container
+	-- Window Instance Object
+	local Window = {}
 
-	return window
-end
+	function Window:AddButton(text, callback)
+		local button = Instance.new("TextButton")
+		button.Name = "Button_" .. text
+		button.Size = UDim2.new(1, 0, 0, 38)
+		button.BackgroundColor3 = Color3.fromRGB(36, 36, 44)
+		button.Text = text or "Button"
+		button.TextColor3 = Color3.fromRGB(240, 240, 240)
+		button.TextSize = 14
+		button.Font = Enum.Font.SourceSansMedium
+		button.AutoButtonColor = false
+		button.ZIndex = 3
+		button.Parent = container
 
-function Library:AddButton(text: string, callback: () -> ())
-	assert(self.Container, "AddButton must be called on a Window instance!")
+		local corner = Instance.new("UICorner")
+		corner.CornerRadius = UDim.new(0, 6)
+		corner.Parent = button
 
-	local button = Instance.new("TextButton")
-	button.Name = "Button_" .. text
-	button.Size = UDim2.new(1, 0, 0, 36)
-	button.BackgroundColor3 = Color3.fromRGB(36, 36, 44)
-	button.Text = text
-	button.TextColor3 = Color3.fromRGB(240, 240, 240)
-	button.TextSize = 14
-	button.Font = Enum.Font.SourceSansMedium
-	button.AutoButtonColor = false
-	button.ZIndex = 3
-	button.Parent = self.Container
+		button.MouseEnter:Connect(function()
+			TweenService:Create(button, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(52, 52, 64)}):Play()
+		end)
+		button.MouseLeave:Connect(function()
+			TweenService:Create(button, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(36, 36, 44)}):Play()
+		end)
 
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0, 6)
-	corner.Parent = button
+		button.MouseButton1Click:Connect(function()
+			if callback then task.spawn(callback) end
+		end)
 
-	button.MouseEnter:Connect(function()
-		TweenService:Create(button, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(52, 52, 64)}):Play()
-	end)
-	button.MouseLeave:Connect(function()
-		TweenService:Create(button, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(36, 36, 44)}):Play()
-	end)
+		return button
+	end
 
-	button.MouseButton1Click:Connect(function()
-		if callback then task.spawn(callback) end
-	end)
+	function Window:AddToggle(text, defaultState, callback)
+		local state = defaultState or false
 
-	return button
-end
+		local frame = Instance.new("Frame")
+		frame.Name = "Toggle_" .. text
+		frame.Size = UDim2.new(1, 0, 0, 38)
+		frame.BackgroundColor3 = Color3.fromRGB(36, 36, 44)
+		frame.ZIndex = 3
+		frame.Parent = container
 
-function Library:AddToggle(text: string, defaultState: boolean, callback: (boolean) -> ())
-	assert(self.Container, "AddToggle must be called on a Window instance!")
+		local corner = Instance.new("UICorner")
+		corner.CornerRadius = UDim.new(0, 6)
+		corner.Parent = frame
 
-	local state = defaultState or false
+		local label = Instance.new("TextLabel")
+		label.Size = UDim2.new(1, -60, 1, 0)
+		label.Position = UDim2.new(0, 12, 0, 0)
+		label.BackgroundTransparency = 1
+		label.Text = text or "Toggle"
+		label.TextColor3 = Color3.fromRGB(240, 240, 240)
+		label.TextSize = 14
+		label.Font = Enum.Font.SourceSansMedium
+		label.TextXAlignment = Enum.TextXAlignment.Left
+		label.ZIndex = 4
+		label.Parent = frame
 
-	local frame = Instance.new("Frame")
-	frame.Name = "Toggle_" .. text
-	frame.Size = UDim2.new(1, 0, 0, 36)
-	frame.BackgroundColor3 = Color3.fromRGB(36, 36, 44)
-	frame.ZIndex = 3
-	frame.Parent = self.Container
+		local togglePill = Instance.new("TextButton")
+		togglePill.Size = UDim2.new(0, 42, 0, 22)
+		togglePill.Position = UDim2.new(1, -50, 0.5, -11)
+		togglePill.BackgroundColor3 = state and Color3.fromRGB(0, 160, 255) or Color3.fromRGB(60, 60, 72)
+		togglePill.Text = ""
+		togglePill.ZIndex = 4
+		togglePill.Parent = frame
 
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0, 6)
-	corner.Parent = frame
+		local pillCorner = Instance.new("UICorner")
+		pillCorner.CornerRadius = UDim.new(1, 0)
+		pillCorner.Parent = togglePill
 
-	local label = Instance.new("TextLabel")
-	label.Size = UDim2.new(1, -60, 1, 0)
-	label.Position = UDim2.new(0, 12, 0, 0)
-	label.BackgroundTransparency = 1
-	label.Text = text
-	label.TextColor3 = Color3.fromRGB(240, 240, 240)
-	label.TextSize = 14
-	label.Font = Enum.Font.SourceSansMedium
-	label.TextXAlignment = Enum.TextXAlignment.Left
-	label.ZIndex = 4
-	label.Parent = frame
+		local dot = Instance.new("Frame")
+		dot.Size = UDim2.new(0, 16, 0, 16)
+		dot.Position = state and UDim2.new(1, -19, 0.5, -8) or UDim2.new(0, 3, 0.5, -8)
+		dot.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		dot.ZIndex = 5
+		dot.Parent = togglePill
 
-	local togglePill = Instance.new("TextButton")
-	togglePill.Size = UDim2.new(0, 42, 0, 22)
-	togglePill.Position = UDim2.new(1, -50, 0.5, -11)
-	togglePill.BackgroundColor3 = state and Color3.fromRGB(0, 160, 255) or Color3.fromRGB(60, 60, 72)
-	togglePill.Text = ""
-	togglePill.ZIndex = 4
-	togglePill.Parent = frame
+		local dotCorner = Instance.new("UICorner")
+		dotCorner.CornerRadius = UDim.new(1, 0)
+		dotCorner.Parent = dot
 
-	local pillCorner = Instance.new("UICorner")
-	pillCorner.CornerRadius = UDim.new(1, 0)
-	pillCorner.Parent = togglePill
+		togglePill.MouseButton1Click:Connect(function()
+			state = not state
+			local targetColor = state and Color3.fromRGB(0, 160, 255) or Color3.fromRGB(60, 60, 72)
+			local targetPos = state and UDim2.new(1, -19, 0.5, -8) or UDim2.new(0, 3, 0.5, -8)
 
-	local dot = Instance.new("Frame")
-	dot.Size = UDim2.new(0, 16, 0, 16)
-	dot.Position = state and UDim2.new(1, -19, 0.5, -8) or UDim2.new(0, 3, 0.5, -8)
-	dot.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	dot.ZIndex = 5
-	dot.Parent = togglePill
+			TweenService:Create(togglePill, TweenInfo.new(0.2), {BackgroundColor3 = targetColor}):Play()
+			TweenService:Create(dot, TweenInfo.new(0.2), {Position = targetPos}):Play()
 
-	local dotCorner = Instance.new("UICorner")
-	dotCorner.CornerRadius = UDim.new(1, 0)
-	dotCorner.Parent = dot
+			if callback then task.spawn(callback, state) end
+		end)
 
-	togglePill.MouseButton1Click:Connect(function()
-		state = not state
-		local targetColor = state and Color3.fromRGB(0, 160, 255) or Color3.fromRGB(60, 60, 72)
-		local targetPos = state and UDim2.new(1, -19, 0.5, -8) or UDim2.new(0, 3, 0.5, -8)
+		return frame
+	end
 
-		TweenService:Create(togglePill, TweenInfo.new(0.2), {BackgroundColor3 = targetColor}):Play()
-		TweenService:Create(dot, TweenInfo.new(0.2), {Position = targetPos}):Play()
-
-		if callback then task.spawn(callback, state) end
-	end)
-
-	return frame
+	return Window
 end
 
 return Library
