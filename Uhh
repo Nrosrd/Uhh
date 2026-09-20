@@ -10,39 +10,33 @@ function Library:CreateWindow(titleText)
 	local localPlayer = Players.LocalPlayer
 	local playerGui = localPlayer:WaitForChild("PlayerGui")
 
-	-- Remove old instance if present
-	if playerGui:FindFirstChild("CustomLibraryGUI") then
-		playerGui.CustomLibraryGUI:Destroy()
+	if playerGui:FindFirstChild("FixedLibraryGUI") then
+		playerGui.FixedLibraryGUI:Destroy()
 	end
 
-	-- ScreenGui
 	local screenGui = Instance.new("ScreenGui")
-	screenGui.Name = "CustomLibraryGUI"
+	screenGui.Name = "FixedLibraryGUI"
 	screenGui.ResetOnSpawn = false
 	screenGui.DisplayOrder = 999
 	screenGui.Parent = playerGui
 
-	-- Main Frame
 	local mainFrame = Instance.new("Frame")
 	mainFrame.Name = "MainFrame"
-	mainFrame.Size = UDim2.new(0, 420, 0, 300)
-	mainFrame.Position = UDim2.new(0.5, -210, 0.5, -150)
+	mainFrame.Size = UDim2.new(0, 400, 0, 280)
+	mainFrame.Position = UDim2.new(0.5, -200, 0.5, -140)
 	mainFrame.BackgroundColor3 = Color3.fromRGB(24, 24, 28)
 	mainFrame.BorderSizePixel = 0
-	mainFrame.ZIndex = 1
 	mainFrame.Parent = screenGui
 
 	local frameCorner = Instance.new("UICorner")
 	frameCorner.CornerRadius = UDim.new(0, 8)
 	frameCorner.Parent = mainFrame
 
-	-- Title Bar
 	local titleBar = Instance.new("Frame")
 	titleBar.Name = "TitleBar"
-	titleBar.Size = UDim2.new(1, 0, 0, 38)
+	titleBar.Size = UDim2.new(1, 0, 0, 36)
 	titleBar.BackgroundColor3 = Color3.fromRGB(32, 32, 38)
 	titleBar.BorderSizePixel = 0
-	titleBar.ZIndex = 2
 	titleBar.Parent = mainFrame
 
 	local titleCorner = Instance.new("UICorner")
@@ -55,21 +49,19 @@ function Library:CreateWindow(titleText)
 	titleLabel.BackgroundTransparency = 1
 	titleLabel.Text = titleText
 	titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	titleLabel.TextSize = 15
+	titleLabel.TextSize = 14
 	titleLabel.Font = Enum.Font.SourceSansBold
 	titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-	titleLabel.ZIndex = 3
 	titleLabel.Parent = titleBar
 
 	local closeBtn = Instance.new("TextButton")
-	closeBtn.Size = UDim2.new(0, 26, 0, 26)
-	closeBtn.Position = UDim2.new(1, -31, 0, 6)
+	closeBtn.Size = UDim2.new(0, 24, 0, 24)
+	closeBtn.Position = UDim2.new(1, -28, 0, 6)
 	closeBtn.BackgroundColor3 = Color3.fromRGB(48, 48, 56)
 	closeBtn.Text = "X"
 	closeBtn.TextColor3 = Color3.fromRGB(220, 220, 220)
-	closeBtn.TextSize = 13
+	closeBtn.TextSize = 12
 	closeBtn.Font = Enum.Font.SourceSansBold
-	closeBtn.ZIndex = 3
 	closeBtn.Parent = titleBar
 
 	local closeCorner = Instance.new("UICorner")
@@ -80,7 +72,7 @@ function Library:CreateWindow(titleText)
 		screenGui:Destroy()
 	end)
 
-	-- Window Dragging Logic
+	-- Dragging Logic
 	local dragging, dragStart, startPos
 	titleBar.InputBegan:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -108,43 +100,39 @@ function Library:CreateWindow(titleText)
 		end
 	end)
 
-	-- Scrollable Container
+	-- Container setup
 	local container = Instance.new("ScrollingFrame")
 	container.Name = "Container"
-	container.Size = UDim2.new(1, -24, 1, -50)
-	container.Position = UDim2.new(0, 12, 0, 44)
+	container.Size = UDim2.new(1, -20, 1, -48)
+	container.Position = UDim2.new(0, 10, 0, 42)
 	container.BackgroundTransparency = 1
 	container.BorderSizePixel = 0
 	container.ScrollBarThickness = 4
 	container.CanvasSize = UDim2.new(0, 0, 0, 0)
-	container.AutomaticCanvasSize = Enum.AutomaticSize.Y
-	container.ZIndex = 2
 	container.Parent = mainFrame
 
 	local listLayout = Instance.new("UIListLayout")
-	listLayout.Padding = UDim.new(0, 8)
+	listLayout.Padding = UDim.new(0, 6)
 	listLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	listLayout.Parent = container
 
-	local padding = Instance.new("UIPadding")
-	padding.PaddingTop = UDim.new(0, 4)
-	padding.PaddingBottom = UDim.new(0, 4)
-	padding.Parent = container
+	-- FIX: Explicitly expand CanvasSize whenever children are added
+	listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+		container.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + 12)
+	end)
 
-	-- Window Instance Object
 	local Window = {}
 
 	function Window:AddButton(text, callback)
 		local button = Instance.new("TextButton")
-		button.Name = "Button_" .. text
-		button.Size = UDim2.new(1, 0, 0, 38)
+		button.Name = "Btn_" .. tostring(text)
+		button.Size = UDim2.new(1, -6, 0, 36)
 		button.BackgroundColor3 = Color3.fromRGB(36, 36, 44)
 		button.Text = text or "Button"
 		button.TextColor3 = Color3.fromRGB(240, 240, 240)
 		button.TextSize = 14
 		button.Font = Enum.Font.SourceSansMedium
 		button.AutoButtonColor = false
-		button.ZIndex = 3
 		button.Parent = container
 
 		local corner = Instance.new("UICorner")
@@ -169,10 +157,9 @@ function Library:CreateWindow(titleText)
 		local state = defaultState or false
 
 		local frame = Instance.new("Frame")
-		frame.Name = "Toggle_" .. text
-		frame.Size = UDim2.new(1, 0, 0, 38)
+		frame.Name = "Toggle_" .. tostring(text)
+		frame.Size = UDim2.new(1, -6, 0, 36)
 		frame.BackgroundColor3 = Color3.fromRGB(36, 36, 44)
-		frame.ZIndex = 3
 		frame.Parent = container
 
 		local corner = Instance.new("UICorner")
@@ -180,23 +167,21 @@ function Library:CreateWindow(titleText)
 		corner.Parent = frame
 
 		local label = Instance.new("TextLabel")
-		label.Size = UDim2.new(1, -60, 1, 0)
-		label.Position = UDim2.new(0, 12, 0, 0)
+		label.Size = UDim2.new(1, -55, 1, 0)
+		label.Position = UDim2.new(0, 10, 0, 0)
 		label.BackgroundTransparency = 1
 		label.Text = text or "Toggle"
 		label.TextColor3 = Color3.fromRGB(240, 240, 240)
 		label.TextSize = 14
 		label.Font = Enum.Font.SourceSansMedium
 		label.TextXAlignment = Enum.TextXAlignment.Left
-		label.ZIndex = 4
 		label.Parent = frame
 
 		local togglePill = Instance.new("TextButton")
-		togglePill.Size = UDim2.new(0, 42, 0, 22)
-		togglePill.Position = UDim2.new(1, -50, 0.5, -11)
+		togglePill.Size = UDim2.new(0, 40, 0, 20)
+		togglePill.Position = UDim2.new(1, -48, 0.5, -10)
 		togglePill.BackgroundColor3 = state and Color3.fromRGB(0, 160, 255) or Color3.fromRGB(60, 60, 72)
 		togglePill.Text = ""
-		togglePill.ZIndex = 4
 		togglePill.Parent = frame
 
 		local pillCorner = Instance.new("UICorner")
@@ -204,10 +189,9 @@ function Library:CreateWindow(titleText)
 		pillCorner.Parent = togglePill
 
 		local dot = Instance.new("Frame")
-		dot.Size = UDim2.new(0, 16, 0, 16)
-		dot.Position = state and UDim2.new(1, -19, 0.5, -8) or UDim2.new(0, 3, 0.5, -8)
+		dot.Size = UDim2.new(0, 14, 0, 14)
+		dot.Position = state and UDim2.new(1, -17, 0.5, -7) or UDim2.new(0, 3, 0.5, -7)
 		dot.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		dot.ZIndex = 5
 		dot.Parent = togglePill
 
 		local dotCorner = Instance.new("UICorner")
@@ -217,7 +201,7 @@ function Library:CreateWindow(titleText)
 		togglePill.MouseButton1Click:Connect(function()
 			state = not state
 			local targetColor = state and Color3.fromRGB(0, 160, 255) or Color3.fromRGB(60, 60, 72)
-			local targetPos = state and UDim2.new(1, -19, 0.5, -8) or UDim2.new(0, 3, 0.5, -8)
+			local targetPos = state and UDim2.new(1, -17, 0.5, -7) or UDim2.new(0, 3, 0.5, -7)
 
 			TweenService:Create(togglePill, TweenInfo.new(0.2), {BackgroundColor3 = targetColor}):Play()
 			TweenService:Create(dot, TweenInfo.new(0.2), {Position = targetPos}):Play()
