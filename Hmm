@@ -20,18 +20,56 @@ function Library:CreateWindow(titleText)
 	screenGui.DisplayOrder = 999
 	screenGui.Parent = playerGui
 
+	-- Top-Middle Toggle Icon Button (Medium Size: 48x48)
+	local toggleBtn = Instance.new("TextButton")
+	toggleBtn.Name = "ToggleIcon"
+	toggleBtn.Size = UDim2.new(0, 48, 0, 48)
+	toggleBtn.Position = UDim2.new(0.5, -24, 0, 12) -- Top middle of screen
+	toggleBtn.BackgroundColor3 = Color3.fromRGB(32, 32, 38)
+	toggleBtn.Text = "⚙️"
+	toggleBtn.TextSize = 22
+	toggleBtn.ZIndex = 1000
+	toggleBtn.AutoButtonColor = false
+	toggleBtn.Parent = screenGui
+
+	local toggleCorner = Instance.new("UICorner")
+	toggleCorner.CornerRadius = UDim.new(0, 12) -- Rounded square icon
+	toggleCorner.Parent = toggleBtn
+
+	local toggleStroke = Instance.new("UIStroke")
+	toggleStroke.Color = Color3.fromRGB(60, 60, 72)
+	toggleStroke.Thickness = 2
+	toggleStroke.Parent = toggleBtn
+
+	-- Main Window Frame
 	local mainFrame = Instance.new("Frame")
 	mainFrame.Name = "MainFrame"
 	mainFrame.Size = UDim2.new(0, 400, 0, 280)
 	mainFrame.Position = UDim2.new(0.5, -200, 0.5, -140)
 	mainFrame.BackgroundColor3 = Color3.fromRGB(24, 24, 28)
 	mainFrame.BorderSizePixel = 0
+	mainFrame.Visible = true
 	mainFrame.Parent = screenGui
 
 	local frameCorner = Instance.new("UICorner")
 	frameCorner.CornerRadius = UDim.new(0, 8)
 	frameCorner.Parent = mainFrame
 
+	-- Icon Click Behavior (Toggle Main Frame Visibility)
+	toggleBtn.MouseButton1Click:Connect(function()
+		mainFrame.Visible = not mainFrame.Visible
+		TweenService:Create(toggleBtn, TweenInfo.new(0.1), {
+			Size = UDim2.new(0, 44, 0, 44),
+			Position = UDim2.new(0.5, -22, 0, 14)
+		}):Play()
+		task.wait(0.1)
+		TweenService:Create(toggleBtn, TweenInfo.new(0.1), {
+			Size = UDim2.new(0, 48, 0, 48),
+			Position = UDim2.new(0.5, -24, 0, 12)
+		}):Play()
+	end)
+
+	-- Title Bar
 	local titleBar = Instance.new("Frame")
 	titleBar.Name = "TitleBar"
 	titleBar.Size = UDim2.new(1, 0, 0, 36)
@@ -69,10 +107,10 @@ function Library:CreateWindow(titleText)
 	closeCorner.Parent = closeBtn
 
 	closeBtn.MouseButton1Click:Connect(function()
-		screenGui:Destroy()
+		mainFrame.Visible = false
 	end)
 
-	-- Mobile & PC Dragging
+	-- Mobile & PC Window Dragging
 	local dragging, dragStart, startPos
 	titleBar.InputBegan:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -116,7 +154,6 @@ function Library:CreateWindow(titleText)
 	listLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	listLayout.Parent = container
 
-	-- Dynamic Canvas Expansion Fix
 	listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 		container.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + 12)
 	end)
