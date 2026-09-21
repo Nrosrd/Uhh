@@ -41,7 +41,7 @@ function Library:CreateWindow(titleText)
 		topInset = 36
 	end
 
-	-- Toggle Icon (Transparent background, showing only the raw image icon)
+	-- Transparent Toggle Icon (Positioned below top Roblox bar)
 	local toggleBtn = Instance.new("ImageButton")
 	toggleBtn.Name = "ToggleIcon"
 	toggleBtn.Size = UDim2.new(0, 36, 0, 36)
@@ -53,7 +53,7 @@ function Library:CreateWindow(titleText)
 	toggleBtn.AutoButtonColor = false
 	toggleBtn.Parent = screenGui
 
-	-- 0.5 Black Overlay
+	-- 0.5 Black Full Screen Overlay (No window frame container inside)
 	local overlay = Instance.new("Frame")
 	overlay.Name = "ScreenOverlay"
 	overlay.Size = UDim2.new(1, 0, 1, -topInset)
@@ -65,7 +65,38 @@ function Library:CreateWindow(titleText)
 	overlay.ZIndex = 1
 	overlay.Parent = screenGui
 
-	-- Listen for top inset changes dynamically
+	-- Title Label on Overlay Top Left
+	local titleLabel = Instance.new("TextLabel")
+	titleLabel.Name = "TitleLabel"
+	titleLabel.Size = UDim2.new(0, 200, 0, 30)
+	titleLabel.Position = UDim2.new(0, 16, 0, 10)
+	titleLabel.BackgroundTransparency = 1
+	titleLabel.Text = titleText
+	titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	titleLabel.TextSize = 16
+	titleLabel.Font = Enum.Font.SourceSansBold
+	titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+	titleLabel.ZIndex = 10
+	titleLabel.Parent = overlay
+
+	-- Close Button Top Right
+	local closeBtn = Instance.new("TextButton")
+	closeBtn.Name = "CloseButton"
+	closeBtn.Size = UDim2.new(0, 28, 0, 28)
+	closeBtn.Position = UDim2.new(1, -38, 0, 10)
+	closeBtn.BackgroundColor3 = Color3.fromRGB(200, 40, 40)
+	closeBtn.Text = "X"
+	closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	closeBtn.TextSize = 14
+	closeBtn.Font = Enum.Font.SourceSansBold
+	closeBtn.ZIndex = 10
+	closeBtn.Parent = overlay
+
+	local closeCorner = Instance.new("UICorner")
+	closeCorner.CornerRadius = UDim.new(0, 6)
+	closeCorner.Parent = closeBtn
+
+	-- Dynamic top inset updates
 	GuiService:GetPropertyChangedSignal("TopbarInset"):Connect(function()
 		local currentInset = GuiService:GetGuiInset().Y
 		if currentInset > 0 then
@@ -75,57 +106,6 @@ function Library:CreateWindow(titleText)
 		end
 	end)
 
-	-- Main Menu Frame
-	local mainFrame = Instance.new("Frame")
-	mainFrame.Name = "MainFrame"
-	mainFrame.Size = UDim2.new(0.85, 0, 0.82, 0)
-	mainFrame.Position = UDim2.new(0.075, 0, 0.1, 0)
-	mainFrame.BackgroundColor3 = Color3.fromRGB(16, 16, 20)
-	mainFrame.BackgroundTransparency = 0.15
-	mainFrame.BorderSizePixel = 0
-	mainFrame.ZIndex = 2
-	mainFrame.Parent = overlay
-
-	local frameCorner = Instance.new("UICorner")
-	frameCorner.CornerRadius = UDim.new(0, 8)
-	frameCorner.Parent = mainFrame
-
-	-- Top Bar
-	local topBar = Instance.new("Frame")
-	topBar.Name = "TopBar"
-	topBar.Size = UDim2.new(1, 0, 0, 32)
-	topBar.BackgroundTransparency = 1
-	topBar.ZIndex = 3
-	topBar.Parent = mainFrame
-
-	local titleLabel = Instance.new("TextLabel")
-	titleLabel.Size = UDim2.new(1, -40, 1, 0)
-	titleLabel.Position = UDim2.new(0, 12, 0, 0)
-	titleLabel.BackgroundTransparency = 1
-	titleLabel.Text = titleText
-	titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	titleLabel.TextSize = 15
-	titleLabel.Font = Enum.Font.SourceSansBold
-	titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-	titleLabel.ZIndex = 4
-	titleLabel.Parent = topBar
-
-	local closeBtn = Instance.new("TextButton")
-	closeBtn.Size = UDim2.new(0, 24, 0, 24)
-	closeBtn.Position = UDim2.new(1, -28, 0, 4)
-	closeBtn.BackgroundColor3 = Color3.fromRGB(200, 40, 40)
-	closeBtn.Text = "X"
-	closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	closeBtn.TextSize = 12
-	closeBtn.Font = Enum.Font.SourceSansBold
-	closeBtn.ZIndex = 4
-	closeBtn.Parent = topBar
-
-	local closeCorner = Instance.new("UICorner")
-	closeCorner.CornerRadius = UDim.new(0, 4)
-	closeCorner.Parent = closeBtn
-
-	-- Toggle Menu Functions
 	local function setMenuVisible(visible)
 		overlay.Visible = visible
 	end
@@ -138,25 +118,20 @@ function Library:CreateWindow(titleText)
 		setMenuVisible(not overlay.Visible)
 	end)
 
-	-- Left Sidebar (Tabs Container)
+	-- Left Sidebar for Tabs (Directly on Overlay)
 	local sidebar = Instance.new("ScrollingFrame")
 	sidebar.Name = "Sidebar"
-	sidebar.Size = UDim2.new(0, 130, 1, -40)
-	sidebar.Position = UDim2.new(0, 8, 0, 36)
-	sidebar.BackgroundColor3 = Color3.fromRGB(12, 12, 16)
-	sidebar.BackgroundTransparency = 0.3
+	sidebar.Size = UDim2.new(0, 130, 1, -55)
+	sidebar.Position = UDim2.new(0, 12, 0, 45)
+	sidebar.BackgroundTransparency = 1
 	sidebar.BorderSizePixel = 0
 	sidebar.ScrollBarThickness = 2
 	sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
 	sidebar.ZIndex = 3
-	sidebar.Parent = mainFrame
-
-	local sidebarCorner = Instance.new("UICorner")
-	sidebarCorner.CornerRadius = UDim.new(0, 6)
-	sidebarCorner.Parent = sidebar
+	sidebar.Parent = overlay
 
 	local sidebarLayout = Instance.new("UIListLayout")
-	sidebarLayout.Padding = UDim.new(0, 4)
+	sidebarLayout.Padding = UDim.new(0, 6)
 	sidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	sidebarLayout.Parent = sidebar
 
@@ -164,14 +139,14 @@ function Library:CreateWindow(titleText)
 		sidebar.CanvasSize = UDim2.new(0, 0, 0, sidebarLayout.AbsoluteContentSize.Y + 8)
 	end)
 
-	-- Right Content Area
+	-- Main Content Grid Area (Directly on Overlay)
 	local contentArea = Instance.new("Frame")
 	contentArea.Name = "ContentArea"
-	contentArea.Size = UDim2.new(1, -154, 1, -40)
-	contentArea.Position = UDim2.new(0, 146, 0, 36)
+	contentArea.Size = UDim2.new(1, -162, 1, -55)
+	contentArea.Position = UDim2.new(0, 150, 0, 45)
 	contentArea.BackgroundTransparency = 1
 	contentArea.ZIndex = 3
-	contentArea.Parent = mainFrame
+	contentArea.Parent = overlay
 
 	local Window = {}
 	local tabs = {}
@@ -179,7 +154,7 @@ function Library:CreateWindow(titleText)
 	function Window:CreateTab(tabName)
 		local tabBtn = Instance.new("TextButton")
 		tabBtn.Name = "Tab_" .. tabName
-		tabBtn.Size = UDim2.new(1, 0, 0, 30)
+		tabBtn.Size = UDim2.new(1, 0, 0, 32)
 		tabBtn.BackgroundColor3 = Color3.fromRGB(24, 24, 30)
 		tabBtn.BackgroundTransparency = 0.5
 		tabBtn.Text = tabName
@@ -204,8 +179,8 @@ function Library:CreateWindow(titleText)
 		tabContent.Parent = contentArea
 
 		local gridLayout = Instance.new("UIGridLayout")
-		gridLayout.CellSize = UDim2.new(0, 125, 0, 34)
-		gridLayout.CellPadding = UDim2.new(0, 8, 0, 8)
+		gridLayout.CellSize = UDim2.new(0, 135, 0, 34)
+		gridLayout.CellPadding = UDim2.new(0, 10, 0, 10)
 		gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
 		gridLayout.Parent = tabContent
 
