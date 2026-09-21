@@ -1,5 +1,6 @@
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
+local GuiService = game:GetService("GuiService")
 
 local Library = {}
 
@@ -18,15 +19,24 @@ function Library:CreateWindow(titleText)
 	screenGui.ResetOnSpawn = false
 	screenGui.DisplayOrder = 999
 	screenGui.IgnoreGuiInset = true
-	
-	-- Disable mobile safe area padding so black overlay extends 100% to left and right edges
+
+	-- Prevent mobile safe-area margins from clipping left/right edges
 	pcall(function()
 		screenGui.ScreenInsets = Enum.ScreenInsets.None
 	end)
-	
+	pcall(function()
+		screenGui.ClipToDeviceSafeArea = false
+	end)
+
 	screenGui.Parent = playerGui
 
-	-- Original Toggle Icon Position
+	-- Dynamically detect the Roblox top bar height for PC and mobile
+	local topInset = GuiService:GetGuiInset().Y
+	if topInset <= 0 then
+		topInset = 36
+	end
+
+	-- Toggle Icon (Top-Middle position)
 	local toggleBtn = Instance.new("TextButton")
 	toggleBtn.Name = "ToggleIcon"
 	toggleBtn.Size = UDim2.new(0, 36, 0, 36)
@@ -47,18 +57,28 @@ function Library:CreateWindow(titleText)
 	toggleStroke.Thickness = 1
 	toggleStroke.Parent = toggleBtn
 
-	-- 0.5 Black Overlay (Edge-to-Edge on PC and Mobile Landscape)
+	-- 0.5 Black Overlay: Stretches edge-to-edge on left, right, and bottom, but cut off below topInset so the top Roblox menu remains completely clear
 	local overlay = Instance.new("Frame")
 	overlay.Name = "ScreenOverlay"
-	overlay.Size = UDim2.new(1, 0, 1, 0)
-	overlay.Position = UDim2.new(0, 0, 0, 0)
+	overlay.Size = UDim2.new(1, 0, 1, -topInset)
+	overlay.Position = UDim2.new(0, 0, 0, topInset)
 	overlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 	overlay.BackgroundTransparency = 0.5
+	overlay.BorderSizePixel = 0
 	overlay.Visible = true
 	overlay.ZIndex = 1
 	overlay.Parent = screenGui
 
-	-- Original Main Menu Frame Position
+	-- Listen for top inset changes dynamically
+	GuiService:GetPropertyChangedSignal("TopbarInset"):Connect(function()
+		local currentInset = GuiService:GetGuiInset().Y
+		if currentInset > 0 then
+			overlay.Position = UDim2.new(0, 0, 0, currentInset)
+			overlay.Size = UDim2.new(1, 0, 1, -currentInset)
+		end
+	end)
+
+	-- Main Menu Frame
 	local mainFrame = Instance.new("Frame")
 	mainFrame.Name = "MainFrame"
 	mainFrame.Size = UDim2.new(0.85, 0, 0.82, 0)
@@ -108,7 +128,7 @@ function Library:CreateWindow(titleText)
 	closeCorner.CornerRadius = UDim.new(0, 4)
 	closeCorner.Parent = closeBtn
 
-	-- Menu Toggle Actions
+	-- Open/Close Actions
 	local function setMenuVisible(visible)
 		overlay.Visible = visible
 	end
@@ -121,7 +141,7 @@ function Library:CreateWindow(titleText)
 		setMenuVisible(not overlay.Visible)
 	end)
 
-	-- Left Sidebar (Tabs Container)
+	-- Left Sidebar (Tabs)
 	local sidebar = Instance.new("ScrollingFrame")
 	sidebar.Name = "Sidebar"
 	sidebar.Size = UDim2.new(0, 130, 1, -40)
