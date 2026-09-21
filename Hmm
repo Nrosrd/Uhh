@@ -1,6 +1,7 @@
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local GuiService = game:GetService("GuiService")
+local UserInputService = game:GetService("UserInputService")
 
 local Library = {}
 
@@ -30,19 +31,23 @@ function Library:CreateWindow(titleText)
 
 	screenGui.Parent = playerGui
 
-	-- Dynamically detect the Roblox top bar height for PC and mobile
+	-- Detect device type to load appropriate image format
+	local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
+	local iconAsset = isMobile and "rbxthumb://type=Asset&id=110083736169025&w=420&h=420" or "rbxassetid://110083736169025"
+
+	-- Dynamically detect the Roblox top bar height
 	local topInset = GuiService:GetGuiInset().Y
 	if topInset <= 0 then
 		topInset = 36
 	end
 
-	-- Custom Image Toggle Icon (Positioned below the Roblox top menu bar)
+	-- Toggle Icon (Positioned below top Roblox menu bar)
 	local toggleBtn = Instance.new("ImageButton")
 	toggleBtn.Name = "ToggleIcon"
 	toggleBtn.Size = UDim2.new(0, 36, 0, 36)
 	toggleBtn.Position = UDim2.new(0.5, -18, 0, topInset + 6)
 	toggleBtn.BackgroundColor3 = Color3.fromRGB(28, 28, 34)
-	toggleBtn.Image = "rbxassetid://110083736169025"
+	toggleBtn.Image = iconAsset
 	toggleBtn.ZIndex = 1000
 	toggleBtn.AutoButtonColor = false
 	toggleBtn.Parent = screenGui
@@ -68,7 +73,7 @@ function Library:CreateWindow(titleText)
 	overlay.ZIndex = 1
 	overlay.Parent = screenGui
 
-	-- Dynamic top inset updates
+	-- Listen for top inset changes dynamically
 	GuiService:GetPropertyChangedSignal("TopbarInset"):Connect(function()
 		local currentInset = GuiService:GetGuiInset().Y
 		if currentInset > 0 then
