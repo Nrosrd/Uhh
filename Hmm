@@ -41,25 +41,17 @@ function Library:CreateWindow(titleText)
 		topInset = 36
 	end
 
-	-- Toggle Icon (Positioned below top Roblox menu bar)
+	-- Toggle Icon (Transparent background, showing only the raw image icon)
 	local toggleBtn = Instance.new("ImageButton")
 	toggleBtn.Name = "ToggleIcon"
 	toggleBtn.Size = UDim2.new(0, 36, 0, 36)
 	toggleBtn.Position = UDim2.new(0.5, -18, 0, topInset + 6)
-	toggleBtn.BackgroundColor3 = Color3.fromRGB(28, 28, 34)
+	toggleBtn.BackgroundTransparency = 1
+	toggleBtn.BorderSizePixel = 0
 	toggleBtn.Image = iconAsset
 	toggleBtn.ZIndex = 1000
 	toggleBtn.AutoButtonColor = false
 	toggleBtn.Parent = screenGui
-
-	local toggleCorner = Instance.new("UICorner")
-	toggleCorner.CornerRadius = UDim.new(0, 8)
-	toggleCorner.Parent = toggleBtn
-
-	local toggleStroke = Instance.new("UIStroke")
-	toggleStroke.Color = Color3.fromRGB(60, 60, 72)
-	toggleStroke.Thickness = 1
-	toggleStroke.Parent = toggleBtn
 
 	-- 0.5 Black Overlay
 	local overlay = Instance.new("Frame")
