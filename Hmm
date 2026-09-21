@@ -53,7 +53,7 @@ function Library:CreateWindow(titleText)
 	toggleBtn.AutoButtonColor = false
 	toggleBtn.Parent = screenGui
 
-	-- 0.5 Black Full Screen Overlay (No window frame container inside)
+	-- 0.5 Black Full Screen Overlay
 	local overlay = Instance.new("Frame")
 	overlay.Name = "ScreenOverlay"
 	overlay.Size = UDim2.new(1, 0, 1, -topInset)
@@ -69,7 +69,7 @@ function Library:CreateWindow(titleText)
 	local titleLabel = Instance.new("TextLabel")
 	titleLabel.Name = "TitleLabel"
 	titleLabel.Size = UDim2.new(0, 200, 0, 30)
-	titleLabel.Position = UDim2.new(0, 16, 0, 10)
+	titleLabel.Position = UDim2.new(0, 24, 0, 12)
 	titleLabel.BackgroundTransparency = 1
 	titleLabel.Text = titleText
 	titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -118,11 +118,11 @@ function Library:CreateWindow(titleText)
 		setMenuVisible(not overlay.Visible)
 	end)
 
-	-- Left Sidebar for Tabs (Directly on Overlay)
+	-- Left Sidebar for Tabs (Shifted right to X = 40)
 	local sidebar = Instance.new("ScrollingFrame")
 	sidebar.Name = "Sidebar"
-	sidebar.Size = UDim2.new(0, 130, 1, -55)
-	sidebar.Position = UDim2.new(0, 12, 0, 45)
+	sidebar.Size = UDim2.new(0, 130, 1, -60)
+	sidebar.Position = UDim2.new(0, 40, 0, 50)
 	sidebar.BackgroundTransparency = 1
 	sidebar.BorderSizePixel = 0
 	sidebar.ScrollBarThickness = 2
@@ -139,11 +139,11 @@ function Library:CreateWindow(titleText)
 		sidebar.CanvasSize = UDim2.new(0, 0, 0, sidebarLayout.AbsoluteContentSize.Y + 8)
 	end)
 
-	-- Main Content Grid Area (Directly on Overlay)
+	-- Main Content Area (Positioned in the middle of the screen)
 	local contentArea = Instance.new("Frame")
 	contentArea.Name = "ContentArea"
-	contentArea.Size = UDim2.new(1, -162, 1, -55)
-	contentArea.Position = UDim2.new(0, 150, 0, 45)
+	contentArea.Size = UDim2.new(0.65, 0, 1, -60)
+	contentArea.Position = UDim2.new(0.5, -120, 0, 50)
 	contentArea.BackgroundTransparency = 1
 	contentArea.ZIndex = 3
 	contentArea.Parent = overlay
@@ -179,7 +179,7 @@ function Library:CreateWindow(titleText)
 		tabContent.Parent = contentArea
 
 		local gridLayout = Instance.new("UIGridLayout")
-		gridLayout.CellSize = UDim2.new(0, 135, 0, 34)
+		gridLayout.CellSize = UDim2.new(0, 130, 0, 34)
 		gridLayout.CellPadding = UDim2.new(0, 10, 0, 10)
 		gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
 		gridLayout.Parent = tabContent
