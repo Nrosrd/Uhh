@@ -36,11 +36,11 @@ function Library:CreateWindow(titleText)
 		topInset = 36
 	end
 
-	-- Toggle Icon (Top-Middle position)
+	-- Toggle Icon (Positioned cleanly BELOW the Roblox top menu bar, top-middle)
 	local toggleBtn = Instance.new("TextButton")
 	toggleBtn.Name = "ToggleIcon"
 	toggleBtn.Size = UDim2.new(0, 36, 0, 36)
-	toggleBtn.Position = UDim2.new(0.5, -18, 0, 8)
+	toggleBtn.Position = UDim2.new(0.5, -18, 0, topInset + 6)
 	toggleBtn.BackgroundColor3 = Color3.fromRGB(28, 28, 34)
 	toggleBtn.Text = "⚙️"
 	toggleBtn.TextSize = 16
@@ -57,7 +57,7 @@ function Library:CreateWindow(titleText)
 	toggleStroke.Thickness = 1
 	toggleStroke.Parent = toggleBtn
 
-	-- 0.5 Black Overlay: Stretches edge-to-edge on left, right, and bottom, but cut off below topInset so the top Roblox menu remains completely clear
+	-- 0.5 Black Overlay: Full width left/right/bottom, cut off cleanly below the top Roblox bar
 	local overlay = Instance.new("Frame")
 	overlay.Name = "ScreenOverlay"
 	overlay.Size = UDim2.new(1, 0, 1, -topInset)
@@ -75,6 +75,7 @@ function Library:CreateWindow(titleText)
 		if currentInset > 0 then
 			overlay.Position = UDim2.new(0, 0, 0, currentInset)
 			overlay.Size = UDim2.new(1, 0, 1, -currentInset)
+			toggleBtn.Position = UDim2.new(0.5, -18, 0, currentInset + 6)
 		end
 	end)
 
@@ -82,7 +83,7 @@ function Library:CreateWindow(titleText)
 	local mainFrame = Instance.new("Frame")
 	mainFrame.Name = "MainFrame"
 	mainFrame.Size = UDim2.new(0.85, 0, 0.82, 0)
-	mainFrame.Position = UDim2.new(0.075, 0, 0.09, 0)
+	mainFrame.Position = UDim2.new(0.075, 0, 0.1, 0)
 	mainFrame.BackgroundColor3 = Color3.fromRGB(16, 16, 20)
 	mainFrame.BackgroundTransparency = 0.15
 	mainFrame.BorderSizePixel = 0
@@ -128,7 +129,7 @@ function Library:CreateWindow(titleText)
 	closeCorner.CornerRadius = UDim.new(0, 4)
 	closeCorner.Parent = closeBtn
 
-	-- Open/Close Actions
+	-- Toggle Menu Functions
 	local function setMenuVisible(visible)
 		overlay.Visible = visible
 	end
@@ -141,7 +142,7 @@ function Library:CreateWindow(titleText)
 		setMenuVisible(not overlay.Visible)
 	end)
 
-	-- Left Sidebar (Tabs)
+	-- Left Sidebar (Tabs Container)
 	local sidebar = Instance.new("ScrollingFrame")
 	sidebar.Name = "Sidebar"
 	sidebar.Size = UDim2.new(0, 130, 1, -40)
