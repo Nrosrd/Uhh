@@ -36,14 +36,13 @@ function Library:CreateWindow(titleText)
 		topInset = 36
 	end
 
-	-- Toggle Icon (Positioned cleanly BELOW the Roblox top menu bar, top-middle)
-	local toggleBtn = Instance.new("TextButton")
+	-- Custom Image Toggle Icon (Positioned below the Roblox top menu bar)
+	local toggleBtn = Instance.new("ImageButton")
 	toggleBtn.Name = "ToggleIcon"
 	toggleBtn.Size = UDim2.new(0, 36, 0, 36)
 	toggleBtn.Position = UDim2.new(0.5, -18, 0, topInset + 6)
 	toggleBtn.BackgroundColor3 = Color3.fromRGB(28, 28, 34)
-	toggleBtn.Text = "⚙️"
-	toggleBtn.TextSize = 16
+	toggleBtn.Image = "rbxassetid://110083736169025"
 	toggleBtn.ZIndex = 1000
 	toggleBtn.AutoButtonColor = false
 	toggleBtn.Parent = screenGui
@@ -57,7 +56,7 @@ function Library:CreateWindow(titleText)
 	toggleStroke.Thickness = 1
 	toggleStroke.Parent = toggleBtn
 
-	-- 0.5 Black Overlay: Full width left/right/bottom, cut off cleanly below the top Roblox bar
+	-- 0.5 Black Overlay
 	local overlay = Instance.new("Frame")
 	overlay.Name = "ScreenOverlay"
 	overlay.Size = UDim2.new(1, 0, 1, -topInset)
@@ -69,7 +68,7 @@ function Library:CreateWindow(titleText)
 	overlay.ZIndex = 1
 	overlay.Parent = screenGui
 
-	-- Listen for top inset changes dynamically
+	-- Dynamic top inset updates
 	GuiService:GetPropertyChangedSignal("TopbarInset"):Connect(function()
 		local currentInset = GuiService:GetGuiInset().Y
 		if currentInset > 0 then
