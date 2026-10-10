@@ -30,7 +30,7 @@ function Library:CreateWindow()
 
 	-- Detect device type for image asset format
 	local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
-	local iconAsset = isMobile and "rbxthumb://type=Asset&id=110083736169025&w=420&h=420" or "rbxassetid://110083736169025"
+	local iconAsset = isMobile and "rbxthumb://type=Asset&id=142785488&w=420&h=420" or "rbxassetid://142785488"
 
 	-- Dynamically detect the Roblox top bar height
 	local topInset = GuiService:GetGuiInset().Y
@@ -41,7 +41,7 @@ function Library:CreateWindow()
 	-- Transparent Toggle Icon (ZIndex = 1 so it sits BEHIND the black overlay screen)
 	local toggleBtn = Instance.new("ImageButton")
 	toggleBtn.Name = "ToggleIcon"
-	toggleBtn.Size = UDim2.new(0, 36, 0, 36)
+	toggleBtn.Size = UDim2.new(0, 38, 0, 38)
 	toggleBtn.Position = UDim2.new(0.5, -18, 0, topInset + 6)
 	toggleBtn.BackgroundTransparency = 1
 	toggleBtn.BorderSizePixel = 0
