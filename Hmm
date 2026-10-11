@@ -63,16 +63,13 @@ function Library:CreateWindow()
 	overlay.ZIndex = 2 -- Renders over top of the toggle icon
 	overlay.Parent = screenGui
 
-	-- Close Button (Top Right)
-	local closeBtn = Instance.new("TextButton")
+	-- Close Button (Top Right) - Image-based so it never breaks on mobile
+	local closeBtn = Instance.new("ImageButton")
 	closeBtn.Name = "CloseButton"
 	closeBtn.Size = UDim2.new(0, 28, 0, 28)
 	closeBtn.Position = UDim2.new(1, -38, 0, 8)
 	closeBtn.BackgroundColor3 = Color3.fromRGB(200, 40, 40)
-	closeBtn.Text = utf8.char(0x2718) -- Uses Unicode for ✘
-	closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	closeBtn.TextSize = 14
-	closeBtn.Font = Enum.Font.SourceSansBold
+	closeBtn.Image = "rbxassetid://6035047409"
 	closeBtn.ZIndex = 10
 	closeBtn.Parent = overlay
 
