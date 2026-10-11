@@ -41,7 +41,7 @@ function Library:CreateWindow()
 	-- Transparent Toggle Icon (ZIndex = 1 so it sits BEHIND the black overlay screen)
 	local toggleBtn = Instance.new("ImageButton")
 	toggleBtn.Name = "ToggleIcon"
-	toggleBtn.Size = UDim2.new(0, 38, 0, 38)
+	toggleBtn.Size = UDim2.new(0, 42, 0, 42)
 	toggleBtn.Position = UDim2.new(0.5, -18, 0, topInset + 6)
 	toggleBtn.BackgroundTransparency = 1
 	toggleBtn.BorderSizePixel = 0
