@@ -30,7 +30,7 @@ function Library:CreateWindow()
 
 	-- Detect device type for image asset format
 	local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
-	local iconAsset = isMobile and "rbxthumb://type=Asset&id=142785488&w=420&h=420" or "rbxassetid://142785488"
+	local iconAsset = isMobile and "rbxthumb://type=Asset&id=4913731875&w=420&h=420" or "rbxassetid://4913731875"
 
 	-- Dynamically detect the Roblox top bar height
 	local topInset = GuiService:GetGuiInset().Y
