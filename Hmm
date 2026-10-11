@@ -63,16 +63,14 @@ function Library:CreateWindow()
 	overlay.ZIndex = 2 -- Renders over top of the toggle icon
 	overlay.Parent = screenGui
 
-	-- Close Button (Top Right)
+	-- Close Button (Top Right) - Perfectly centered using a nested label
 	local closeBtn = Instance.new("TextButton")
 	closeBtn.Name = "CloseButton"
 	closeBtn.Size = UDim2.new(0, 28, 0, 28)
 	closeBtn.Position = UDim2.new(1, -38, 0, 8)
 	closeBtn.BackgroundColor3 = Color3.fromRGB(200, 40, 40)
-	closeBtn.Text = "X"
-	closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	closeBtn.TextSize = 25
-	closeBtn.Font = Enum.Font.LuckiestGuy
+	closeBtn.Text = ""
+	closeBtn.AutoButtonColor = false
 	closeBtn.ZIndex = 10
 	closeBtn.Parent = overlay
 
@@ -80,7 +78,18 @@ function Library:CreateWindow()
 	closeCorner.CornerRadius = UDim.new(0, 6)
 	closeCorner.Parent = closeBtn
 
-	-- Dynamic top inset updates
+	local closeText = Instance.new("TextLabel")
+	closeText.Name = "Text"
+	closeText.Size = UDim2.new(1, 0, 1, 3) -- Adds a 3-pixel downward shift to balance the font baseline
+	closeText.BackgroundTransparency = 1
+	closeText.Text = "X"
+	closeText.TextColor3 = Color3.fromRGB(255, 255, 255)
+	closeText.TextSize = 20
+	closeText.Font = Enum.Font.LuckiestGuy
+	closeText.ZIndex = 11
+	closeText.Parent = closeBtn
+
+-- Dynamic top inset updates
 	GuiService:GetPropertyChangedSignal("TopbarInset"):Connect(function()
 		local currentInset = GuiService:GetGuiInset().Y
 		if currentInset > 0 then
