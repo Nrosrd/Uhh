@@ -69,10 +69,10 @@ function Library:CreateWindow()
 	closeBtn.Size = UDim2.new(0, 28, 0, 28)
 	closeBtn.Position = UDim2.new(1, -38, 0, 8)
 	closeBtn.BackgroundColor3 = Color3.fromRGB(200, 40, 40)
-	closeBtn.Text = "𝘅"
+	closeBtn.Text = "X"
 	closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	closeBtn.TextSize = 18
-	closeBtn.Font = Enum.Font.SourceSansBold
+	closeBtn.TextSize = 25
+	closeBtn.Font = Enum.Font.LuckiestGuy
 	closeBtn.ZIndex = 10
 	closeBtn.Parent = overlay
 
