@@ -57,7 +57,7 @@ function Library:CreateWindow()
 	overlay.Size = UDim2.new(1, 0, 1, -topInset)
 	overlay.Position = UDim2.new(0, 0, 0, topInset)
 	overlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-	overlay.BackgroundTransparency = 0.5
+	overlay.BackgroundTransparency = 0.2
 	overlay.BorderSizePixel = 0
 	overlay.Visible = false
 	overlay.ZIndex = 2
@@ -148,10 +148,10 @@ function Library:CreateWindow()
 		local tabBtn = Instance.new("TextButton")
 		tabBtn.Name = "Tab_" .. tabName
 		tabBtn.Size = UDim2.new(1, 0, 0, 28)
-		tabBtn.BackgroundColor3 = Color3.fromRGB(24, 24, 30)
-		tabBtn.BackgroundTransparency = 0.5 -- Tab background 0.5 transparency
+		tabBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+		tabBtn.BackgroundTransparency = 0.1 -- 0.1 black background
 		tabBtn.Text = tabName
-		tabBtn.TextColor3 = Color3.fromRGB(220, 50, 50) -- Text red
+		tabBtn.TextColor3 = Color3.fromRGB(220, 50, 50)
 		tabBtn.TextSize = 13
 		tabBtn.Font = Enum.Font.LuckiestGuy
 		tabBtn.ZIndex = 4
@@ -184,12 +184,14 @@ function Library:CreateWindow()
 		local function selectTab()
 			for _, data in pairs(tabs) do
 				data.Content.Visible = false
-				data.Button.BackgroundColor3 = Color3.fromRGB(24, 24, 30)
+				data.Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+				data.Button.BackgroundTransparency = 0.1
 				data.Button.TextColor3 = Color3.fromRGB(220, 50, 50)
 			end
 			tabContent.Visible = true
 			tabBtn.BackgroundColor3 = Color3.fromRGB(0, 40, 180) -- Blue when selected
-			tabBtn.TextColor3 = Color3.fromRGB(220, 50, 50) -- Text remains red
+			tabBtn.BackgroundTransparency = 0.1
+			tabBtn.TextColor3 = Color3.fromRGB(220, 50, 50)
 		end
 
 		tabBtn.MouseButton1Click:Connect(selectTab)
@@ -205,8 +207,8 @@ function Library:CreateWindow()
 		function TabObject:AddButton(text, callback)
 			local btn = Instance.new("TextButton")
 			btn.Name = "Btn_" .. text
-			btn.BackgroundColor3 = Color3.fromRGB(20, 20, 26)
-			btn.BackgroundTransparency = 0.5 -- Button background 0.5 transparency
+			btn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+			btn.BackgroundTransparency = 0.1 -- 0.1 black background
 			btn.Text = text
 			btn.TextColor3 = Color3.fromRGB(0, 220, 255)
 			btn.TextSize = 11
@@ -230,10 +232,10 @@ function Library:CreateWindow()
 
 			local btn = Instance.new("TextButton")
 			btn.Name = "Toggle_" .. text
-			btn.BackgroundColor3 = state and Color3.fromRGB(0, 220, 255) or Color3.fromRGB(20, 20, 26) -- Cyan when ON
-			btn.BackgroundTransparency = 0.5 -- Toggle background 0.5 transparency
-			btn.Text = text -- Clean text without ON/OFF
-			btn.TextColor3 = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(0, 220, 255)
+			btn.BackgroundColor3 = state and Color3.fromRGB(20, 50, 100) or Color3.fromRGB(0, 0, 0) -- Dark blue when ON, black when OFF
+			btn.BackgroundTransparency = 0.1 -- 0.1 black background
+			btn.Text = text
+			btn.TextColor3 = state and Color3.fromRGB(180, 30, 30) or Color3.fromRGB(0, 220, 255) -- Dark red text when ON, cyan when OFF
 			btn.TextSize = 11
 			btn.Font = Enum.Font.LuckiestGuy
 			btn.ZIndex = 5
@@ -245,8 +247,9 @@ function Library:CreateWindow()
 
 			btn.MouseButton1Click:Connect(function()
 				state = not state
-				btn.BackgroundColor3 = state and Color3.fromRGB(0, 220, 255) or Color3.fromRGB(20, 20, 26)
-				btn.TextColor3 = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(0, 220, 255)
+				btn.BackgroundColor3 = state and Color3.fromRGB(20, 50, 100) or Color3.fromRGB(0, 0, 0)
+				btn.BackgroundTransparency = 0.1
+				btn.TextColor3 = state and Color3.fromRGB(180, 30, 30) or Color3.fromRGB(0, 220, 255)
 				btn.Text = text
 
 				if callback then task.spawn(callback, state) end
