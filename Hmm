@@ -189,7 +189,7 @@ function Library:CreateWindow()
 				data.Button.TextColor3 = Color3.fromRGB(220, 50, 50)
 			end
 			tabContent.Visible = true
-			tabBtn.BackgroundColor3 = Color3.fromRGB(0, 40, 180) -- Blue when selected
+			tabBtn.BackgroundColor3 = Color3.fromRGB(20, 50, 100) -- Blue when selected
 			tabBtn.BackgroundTransparency = 0.1
 			tabBtn.TextColor3 = Color3.fromRGB(220, 50, 50)
 		end
@@ -235,7 +235,7 @@ function Library:CreateWindow()
 			btn.BackgroundColor3 = state and Color3.fromRGB(20, 50, 100) or Color3.fromRGB(0, 0, 0) -- Dark blue when ON, black when OFF
 			btn.BackgroundTransparency = 0.1 -- 0.1 black background
 			btn.Text = text
-			btn.TextColor3 = state and Color3.fromRGB(180, 30, 30) or Color3.fromRGB(0, 220, 255) -- Dark red text when ON, cyan when OFF
+			btn.TextColor3 = state and Color3.fromRGB(0, 220, 255) or Color3.fromRGB(0, 220, 255) -- Dark red text when ON, cyan when OFF
 			btn.TextSize = 11
 			btn.Font = Enum.Font.LuckiestGuy
 			btn.ZIndex = 5
