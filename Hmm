@@ -30,7 +30,7 @@ function Library:CreateWindow()
 
 	-- Detect device type for image asset format
 	local isMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
-	local iconAsset = isMobile and "rbxthumb://type=Asset&id=4913731875&w=420&h=420" or "rbxassetid://4913731875"
+	local iconAsset = isMobile and "rbxthumb://type=Asset&id=142785488&w=420&h=420" or "rbxassetid://142785488"
 
 	-- Dynamically detect the Roblox top bar height
 	local topInset = GuiService:GetGuiInset().Y
@@ -41,7 +41,7 @@ function Library:CreateWindow()
 	-- Transparent Toggle Icon (ZIndex = 1 so it sits BEHIND the black overlay screen)
 	local toggleBtn = Instance.new("ImageButton")
 	toggleBtn.Name = "ToggleIcon"
-	toggleBtn.Size = UDim2.new(0, 42, 0, 42)
+	toggleBtn.Size = UDim2.new(0, 38, 0, 38)
 	toggleBtn.Position = UDim2.new(0.5, -18, 0, topInset + 6)
 	toggleBtn.BackgroundTransparency = 1
 	toggleBtn.BorderSizePixel = 0
@@ -59,11 +59,11 @@ function Library:CreateWindow()
 	overlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 	overlay.BackgroundTransparency = 0.5
 	overlay.BorderSizePixel = 0
-	overlay.Visible = false -- Automatically closed on script execution
-	overlay.ZIndex = 2 -- Renders over top of the toggle icon
+	overlay.Visible = false
+	overlay.ZIndex = 2
 	overlay.Parent = screenGui
 
-	-- Close Button (Top Right) - Perfectly centered using a nested label
+	-- Close Button (Top Right)
 	local closeBtn = Instance.new("TextButton")
 	closeBtn.Name = "CloseButton"
 	closeBtn.Size = UDim2.new(0, 28, 0, 28)
@@ -80,7 +80,7 @@ function Library:CreateWindow()
 
 	local closeText = Instance.new("TextLabel")
 	closeText.Name = "Text"
-	closeText.Size = UDim2.new(1, 0, 1, 3) -- Adds a 3-pixel downward shift to balance the font baseline
+	closeText.Size = UDim2.new(1, 0, 1, 3)
 	closeText.BackgroundTransparency = 1
 	closeText.Text = "X"
 	closeText.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -89,7 +89,7 @@ function Library:CreateWindow()
 	closeText.ZIndex = 11
 	closeText.Parent = closeBtn
 
--- Dynamic top inset updates
+	-- Dynamic top inset updates
 	GuiService:GetPropertyChangedSignal("TopbarInset"):Connect(function()
 		local currentInset = GuiService:GetGuiInset().Y
 		if currentInset > 0 then
@@ -103,12 +103,10 @@ function Library:CreateWindow()
 		overlay.Visible = visible
 	end
 
-	-- X Button closes the GUI overlay
 	closeBtn.MouseButton1Click:Connect(function()
 		setMenuVisible(false)
 	end)
 
-	-- Icon toggles GUI overlay on and off
 	toggleBtn.MouseButton1Click:Connect(function()
 		setMenuVisible(not overlay.Visible)
 	end)
@@ -151,11 +149,11 @@ function Library:CreateWindow()
 		tabBtn.Name = "Tab_" .. tabName
 		tabBtn.Size = UDim2.new(1, 0, 0, 28)
 		tabBtn.BackgroundColor3 = Color3.fromRGB(24, 24, 30)
-		tabBtn.BackgroundTransparency = 0.5
+		tabBtn.BackgroundTransparency = 0.5 -- Tab background 0.5 transparency
 		tabBtn.Text = tabName
-		tabBtn.TextColor3 = Color3.fromRGB(220, 50, 50)
+		tabBtn.TextColor3 = Color3.fromRGB(220, 50, 50) -- Text red
 		tabBtn.TextSize = 13
-		tabBtn.Font = Enum.Font.SourceSansBold
+		tabBtn.Font = Enum.Font.LuckiestGuy
 		tabBtn.ZIndex = 4
 		tabBtn.Parent = sidebar
 
@@ -190,8 +188,8 @@ function Library:CreateWindow()
 				data.Button.TextColor3 = Color3.fromRGB(220, 50, 50)
 			end
 			tabContent.Visible = true
-			tabBtn.BackgroundColor3 = Color3.fromRGB(0, 40, 180)
-			tabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+			tabBtn.BackgroundColor3 = Color3.fromRGB(0, 40, 180) -- Blue when selected
+			tabBtn.TextColor3 = Color3.fromRGB(220, 50, 50) -- Text remains red
 		end
 
 		tabBtn.MouseButton1Click:Connect(selectTab)
@@ -208,11 +206,11 @@ function Library:CreateWindow()
 			local btn = Instance.new("TextButton")
 			btn.Name = "Btn_" .. text
 			btn.BackgroundColor3 = Color3.fromRGB(20, 20, 26)
-			btn.BackgroundTransparency = 0.2
+			btn.BackgroundTransparency = 0.5 -- Button background 0.5 transparency
 			btn.Text = text
 			btn.TextColor3 = Color3.fromRGB(0, 220, 255)
 			btn.TextSize = 11
-			btn.Font = Enum.Font.SourceSansBold
+			btn.Font = Enum.Font.LuckiestGuy
 			btn.ZIndex = 5
 			btn.Parent = tabContent
 
@@ -232,12 +230,12 @@ function Library:CreateWindow()
 
 			local btn = Instance.new("TextButton")
 			btn.Name = "Toggle_" .. text
-			btn.BackgroundColor3 = state and Color3.fromRGB(0, 70, 140) or Color3.fromRGB(20, 20, 26)
-			btn.BackgroundTransparency = 0.2
-			btn.Text = text .. (state and " [ON]" or " [OFF]")
+			btn.BackgroundColor3 = state and Color3.fromRGB(0, 220, 255) or Color3.fromRGB(20, 20, 26) -- Cyan when ON
+			btn.BackgroundTransparency = 0.5 -- Toggle background 0.5 transparency
+			btn.Text = text -- Clean text without ON/OFF
 			btn.TextColor3 = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(0, 220, 255)
 			btn.TextSize = 11
-			btn.Font = Enum.Font.SourceSansBold
+			btn.Font = Enum.Font.LuckiestGuy
 			btn.ZIndex = 5
 			btn.Parent = tabContent
 
@@ -247,9 +245,9 @@ function Library:CreateWindow()
 
 			btn.MouseButton1Click:Connect(function()
 				state = not state
-				btn.BackgroundColor3 = state and Color3.fromRGB(0, 70, 140) or Color3.fromRGB(20, 20, 26)
+				btn.BackgroundColor3 = state and Color3.fromRGB(0, 220, 255) or Color3.fromRGB(20, 20, 26)
 				btn.TextColor3 = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(0, 220, 255)
-				btn.Text = text .. (state and " [ON]" or " [OFF]")
+				btn.Text = text
 
 				if callback then task.spawn(callback, state) end
 			end)
