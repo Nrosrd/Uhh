@@ -189,7 +189,7 @@ function Library:CreateWindow()
 				data.Button.TextColor3 = Color3.fromRGB(220, 50, 50)
 			end
 			tabContent.Visible = true
-			tabBtn.BackgroundColor3 = Color3.fromRGB(0, 120, 255) -- Bright blue when selected
+			tabBtn.BackgroundColor3 = Color3.fromRGB(240, 100, 27) -- Bright blue when selected
 			tabBtn.BackgroundTransparency = 0.1
 			tabBtn.TextColor3 = Color3.fromRGB(220, 50, 50)
 		end
@@ -232,7 +232,7 @@ function Library:CreateWindow()
 
 			local btn = Instance.new("TextButton")
 			btn.Name = "Toggle_" .. text
-			btn.BackgroundColor3 = state and Color3.fromRGB(0, 120, 255) or Color3.fromRGB(0, 0, 0) -- Blue when ON, black when OFF
+			btn.BackgroundColor3 = state and Color3.fromRGB(240, 100, 27) or Color3.fromRGB(0, 0, 0) -- Blue when ON, black when OFF
 			btn.BackgroundTransparency = 0.1 -- 0.1 black background
 			btn.Text = text
 			btn.TextColor3 = Color3.fromRGB(0, 220, 255) -- Always cyan text
