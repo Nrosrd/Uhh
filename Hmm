@@ -57,7 +57,7 @@ function Library:CreateWindow()
 	overlay.Size = UDim2.new(1, 0, 1, -topInset)
 	overlay.Position = UDim2.new(0, 0, 0, topInset)
 	overlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-	overlay.BackgroundTransparency = 0.2
+	overlay.BackgroundTransparency = 0.4
 	overlay.BorderSizePixel = 0
 	overlay.Visible = false
 	overlay.ZIndex = 2
